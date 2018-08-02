@@ -2,6 +2,8 @@
 
 > Fast & Lightweight HTTP server, that just works. Accessible through CLI.
 
+![](screenshot.png)
+
 # Highlights
 - Beautiful output
 - Zero-config (unless you want to specify a custom port or directory).
