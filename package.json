@@ -1,0 +1,38 @@
+{
+  "name": "fastic",
+  "description": "Fast & Lightweight CLI HTTP server",
+  "version": "1.0.0",
+  "bin": {
+    "fastic": "./fastic.js"
+  },
+  "preferGlobal": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xxczaki/fastic.git"
+  },
+  "author": {
+    "name": "Antoni Kepinski",
+    "email": "a@kepinski.me",
+    "url": "https://kepinski.me"
+  },
+  "license": "MIT",
+  "keywords": [
+    "fastic",
+    "server",
+    "cli",
+    "http",
+    "fast",
+    "nodejs",
+    "static",
+    "web",
+    "site",
+    "website"
+  ],
+  "devDependencies": {
+    "xo": "*"
+  },
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "clipboardy": "^1.2.3"
+  }
+}
