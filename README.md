@@ -2,7 +2,7 @@
 
 > Fast & Lightweight HTTP server, that just works. Accessible through CLI.
 
-![](screenshot.png)
+<img src="https://cdn.rawgit.com/xxczaki/fastic/c538d63c/gif.svg" height="575" width="750" alt="SVG">
 
 # Highlights
 - Beautiful output
