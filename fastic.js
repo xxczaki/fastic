@@ -13,11 +13,11 @@ const types = getTypes();
 const port = process.argv[2] || 5050;
 const root = process.argv[3] || '.';
 
-http.createServer((req, res) => {
-	const {method, url} = req;
+http.createServer(async (req, res) => {
+	const {method, url} = await req;
 	let requestPath = decodeURI(url.replace(/^\/+/, '').replace(/\?.*$/, ''));
-	const filePath = path.resolve(root, requestPath);
-	const type = types[path.extname(filePath)] || 'application/octet-stream';
+	const filePath = await path.resolve(root, requestPath);
+	const type = await types[path.extname(filePath)] || 'application/octet-stream';
 
 	// Logger
 	fs.stat(filePath, (err, stat) => {
@@ -35,7 +35,7 @@ http.createServer((req, res) => {
 		} else {
 			fs.readFile(filePath, (err, content) => {
 				if (err) {
-					logResponse(`${chalk.green('fastic')} ${chalk.dim('›')} `, `${chalk.cyan(method)}`, url, `${chalk.red(404)}`);
+					logResponse(`${chalk.green('fastic')} ${chalk.red.dim('›')} `, `${chalk.cyan(method)}`, url, `${chalk.red(404)}`);
 				} else {
 					sendFile(res, type, content);
 					logResponse(`${chalk.green('fastic')} ${chalk.dim('›')} `, `${chalk.cyan(method)}`, url, `${chalk.yellow(200)}`);
@@ -46,8 +46,14 @@ http.createServer((req, res) => {
 }).listen(port, () => {
 	// Notify user about server & copy it's address to clipboard
 	console.log(`${chalk.green('fastic')} ${chalk.dim('›')} Running at http://localhost:${port} ${chalk.dim('[copied to clipboard]')}`);
-	console.log('\n=> Press Ctrl + C to stop');
+	console.log('\n=> Press Ctrl + C to stop\n');
 	clipboardy.write(`http://localhost:${port}`);
+});
+
+// Show message, when Ctrl + C is pressed
+process.on('SIGINT', () => {
+	console.log(`\n${chalk.green('fastic')} ${chalk.red.dim('›')} Stopped, see you next time!`);
+	process.exit(0);
 });
 
 // Set headers
@@ -90,11 +96,11 @@ function listDirectory(res, dir, requestPath) {
 	});
 }
 // Interface for listing the directory's contents
-function sendDirListing(res, files, dirs, requestPath) {
+async function sendDirListing(res, files, dirs, requestPath) {
 	requestPath = ('/' + requestPath).replace(/\/+/g, '/');
 
-	const content = `
-		<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin-left: 25px">
+	const content = await `
+		<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin-left: 25px; -webkit-font-smoothing: antialiased; font-family: Menlo, Consolas, monospace;">
 			<h2>Listing files for <b>${requestPath}</b></h2>
 			<ul>
 ${
