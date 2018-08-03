@@ -1,4 +1,4 @@
-# Fastic 
+# Fastic 🚀
 
 > Fast & Lightweight HTTP server, that just works. Accessible through CLI.
 
