@@ -1,4 +1,4 @@
-![](https://cdn.rawgit.com/xxczaki/fastic/50f26b3d/fastic-logo.svg)
+# Fastic 
 
 > Fast & Lightweight HTTP server, that just works. Accessible through CLI.
 
