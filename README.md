@@ -2,14 +2,15 @@
 
 > Fast & Lightweight HTTP server, that just works. Accessible through CLI.
 
-<img src="https://cdn.rawgit.com/xxczaki/fastic/c538d63c/gif.svg" height="575" width="750" alt="SVG">
+<img src="https://cdn.rawgit.com/xxczaki/fastic/c538d63c/gif.svg" alt="SVG">
 
 # Highlights
 - Beautiful output
 - Zero-config (unless you want to specify a custom port or directory).
 - Easy access through CLI.
-- Automatically guesses the content type, using file extension.
-- Logs HTTP requests, response status codes.
+- Automatically detects the content type, using file extension.
+- Logs HTTP requests & response status codes.
+- Lightweight (only ~1.2 MB).
 
 # Install
 ```bash
