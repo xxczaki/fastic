@@ -14,8 +14,7 @@ const port = process.argv[2] || 5050;
 const root = process.argv[3] || '.';
 
 http.createServer((req, res) => {
-	const {method} = req;
-	const {url} = req;
+	const {method, url} = req;
 	let requestPath = decodeURI(url.replace(/^\/+/, '').replace(/\?.*$/, ''));
 	const filePath = path.resolve(root, requestPath);
 	const type = types[path.extname(filePath)] || 'application/octet-stream';
