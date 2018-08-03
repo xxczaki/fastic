@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint handle-callback-err:0 */
 
 'use strict';
 
@@ -19,6 +20,7 @@ http.createServer((req, res) => {
 	const filePath = path.resolve(root, requestPath);
 	const type = types[path.extname(filePath)] || 'application/octet-stream';
 
+	// Logger
 	fs.stat(filePath, (err, stat) => {
 		if (stat && stat.isDirectory()) {
 			fs.readFile(filePath + '/index.html', (err, content) => {
@@ -43,11 +45,13 @@ http.createServer((req, res) => {
 		}
 	});
 }).listen(port, () => {
-	console.log(`${chalk.green('fastic')} ${chalk.dim('›')} Running on http://localhost:${port} ${chalk.dim('[copied to clipboard]')}`);
+	// Notify user about server & copy it's address to clipboard
+	console.log(`${chalk.green('fastic')} ${chalk.dim('›')} Running at http://localhost:${port} ${chalk.dim('[copied to clipboard]')}`);
 	console.log('\n=> Press Ctrl + C to stop');
 	clipboardy.write(`http://localhost:${port}`);
 });
 
+// Set headers
 function sendFile(res, type, content) {
 	res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
 	res.setHeader('Pragma', 'no-cache');
@@ -86,12 +90,12 @@ function listDirectory(res, dir, requestPath) {
 		});
 	});
 }
-
+// Interface for listing the directory's contents
 function sendDirListing(res, files, dirs, requestPath) {
 	requestPath = ('/' + requestPath).replace(/\/+/g, '/');
 
 	let content = '<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin-left: 25px">';
-	content += '<h2>Listing files for ' + requestPath + '</h2>';
+	content += '<h2>Listing files for <b>' + requestPath + '</b></h2>';
 	content += '<ul>';
 
 	content += dirs.map(dir => {
@@ -106,10 +110,12 @@ function sendDirListing(res, files, dirs, requestPath) {
 	res.end(content);
 }
 
+// Little helper
 function logResponse(method, url, code, type) {
 	console.log(`${chalk.cyan(method)}`, url, `${chalk.yellow(type)}`, code);
 }
 
+// Detect content type using file extension
 function getTypes() {
 	return {
 		'.avi': 'video/avi',

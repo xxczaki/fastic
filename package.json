@@ -1,7 +1,7 @@
 {
   "name": "fastic",
   "description": "Fast & Lightweight CLI HTTP server",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "bin": {
     "fastic": "./fastic.js"
   },
@@ -34,5 +34,8 @@
   "dependencies": {
     "chalk": "^2.4.1",
     "clipboardy": "^1.2.3"
+  },
+  "scripts": {
+    "test": "xo"
   }
 }
