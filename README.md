@@ -10,6 +10,8 @@
 - Easy access through CLI.
 - Automatically detects the content type, using file extension.
 - Logs HTTP requests & response status codes.
+- Single source file (containing ~160 lines of code)
+- 2 dependencies
 - Lightweight (only ~1.2 MB).
 
 # Install
