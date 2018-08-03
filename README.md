@@ -9,6 +9,7 @@
 # Highlights
 - Beautiful output
 - Zero-config (unless you want to specify a custom port or directory).
+- Uses async/await
 - Easy access through CLI.
 - Automatically detects the content type, using file extension.
 - Logs HTTP requests & response status codes.
