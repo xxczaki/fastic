@@ -1,7 +1,7 @@
 {
   "name": "fastic",
   "description": "Fast & Lightweight CLI HTTP server",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "bin": {
     "fastic": "./fastic.js"
   },
