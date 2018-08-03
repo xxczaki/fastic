@@ -93,19 +93,24 @@ function listDirectory(res, dir, requestPath) {
 function sendDirListing(res, files, dirs, requestPath) {
 	requestPath = ('/' + requestPath).replace(/\/+/g, '/');
 
-	let content = '<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin-left: 25px">';
-	content += '<h2>Listing files for <b>' + requestPath + '</b></h2>';
-	content += '<ul>';
-
-	content += dirs.map(dir => {
-		return '<li><a href="' + requestPath + dir + '">' + dir + '</a></li>';
-	}).join('');
-	content += files.map(file => {
-		return '<li><a href="' + requestPath + file + '">' + file + '</a></li>';
-	}).join('');
-	content += '</ul>';
-	content += '<footer>Powered by <a href="https://github.com/xxczaki/fastic">fastic</a> 🚀</footer>';
-	content += '</body></html>';
+	let content = `
+		<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin-left: 25px">
+			<h2>Listing files for <b>${requestPath}</b></h2>
+			<ul>
+			${
+				dirs.map(dir => {
+						return '<li><a href="' + requestPath + dir + '">' + dir + '</a></li>';
+				}).join('')
+			}
+			${
+				files.map(file => {
+						return '<li><a href="' + requestPath + file + '">' + file + '</a></li>';
+				}).join('')
+			}
+			</ul>
+			<footer>Powered by <a href="https://github.com/xxczaki/fastic">fastic</a> 🚀</footer>
+			</body></html>
+	`;
 	res.end(content);
 }
 
