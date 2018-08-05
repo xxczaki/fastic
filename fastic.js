@@ -3,22 +3,21 @@
 
 'use strict';
 
-const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
 const clipboardy = require('clipboardy');
+const turbo = require('turbo-http');
 
 const types = getTypes();
 const port = process.argv[2] || 5050;
 const root = process.argv[3] || '.';
 
-http.createServer(async (req, res) => {
+turbo.createServer(async (req, res) => {
 	const {method, url} = await req;
 	let requestPath = decodeURI(url.replace(/^\/+/, '').replace(/\?.*$/, ''));
 	const filePath = await path.resolve(root, requestPath);
 	const type = await types[path.extname(filePath)] || 'application/octet-stream';
-
 	// Logger
 	fs.stat(filePath, (err, stat) => {
 		if (stat && stat.isDirectory()) {
@@ -35,7 +34,7 @@ http.createServer(async (req, res) => {
 		} else {
 			fs.readFile(filePath, (err, content) => {
 				if (err) {
-					logResponse(`${chalk.green('fastic')} ${chalk.red.dim('›')} `, `${chalk.cyan(method)}`, url, `${chalk.red(404)}`);
+					logResponse(`${chalk.green('fastic')} ${chalk.dim('›')} `, `${chalk.cyan(method)}`, url, `${chalk.red(404)}`);
 				} else {
 					sendFile(res, type, content);
 					logResponse(`${chalk.green('fastic')} ${chalk.dim('›')} `, `${chalk.cyan(method)}`, url, `${chalk.yellow(200)}`);
@@ -44,26 +43,30 @@ http.createServer(async (req, res) => {
 		}
 	});
 }).listen(port, () => {
+	// Do not start server, if port number is greater than 65535 or the value is not a number
+	if (port > 65535) {
+		console.log(chalk.red('Maximum available port number is 65535!'));
+		process.exit(1);
+	} else if (isNaN(port)) {
+		console.log(chalk.red(port, 'is not a port number!'));
+		process.exit(1);
+	}
 	// Notify user about server & copy it's address to clipboard
 	console.log(`${chalk.green('fastic')} ${chalk.dim('›')} Running at http://localhost:${port} ${chalk.dim('[copied to clipboard]')}`);
 	console.log('\n=> Press Ctrl + C to stop\n');
 	clipboardy.write(`http://localhost:${port}`);
 });
-
 // Show message, when Ctrl + C is pressed
 process.on('SIGINT', () => {
-	console.log(`\n${chalk.green('fastic')} ${chalk.red.dim('›')} Stopped, see you next time!`);
+	console.log(`\n${chalk.green('fastic')} ${chalk.dim('›')} Stopped, see you next time!`);
 	process.exit(0);
 });
-
 // Set headers
-function sendFile(res, type, content) {
-	res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-	res.setHeader('Pragma', 'no-cache');
-	res.setHeader('Expires', '0');
-
-	res.setHeader('Content-Type', type);
-
+async function sendFile(res, type, content) {
+	await res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+	await res.setHeader('Pragma', 'no-cache');
+	await res.setHeader('Expires', '0');
+	await res.setHeader('Content-Type', type);
 	res.end(content);
 }
 
@@ -87,7 +90,6 @@ function listDirectory(res, dir, requestPath) {
 						files.push(name);
 					}
 				}
-
 				if (!--numRemaining) {
 					sendDirListing(res, files, dirs, requestPath);
 				}
@@ -98,7 +100,6 @@ function listDirectory(res, dir, requestPath) {
 // Interface for listing the directory's contents
 async function sendDirListing(res, files, dirs, requestPath) {
 	requestPath = ('/' + requestPath).replace(/\/+/g, '/');
-
 	const content = await `
 		<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin-left: 25px; -webkit-font-smoothing: antialiased; font-family: Menlo, Consolas, monospace;">
 			<h2>Listing files for <b>${requestPath}</b></h2>
@@ -119,12 +120,10 @@ ${
 	`;
 	res.end(content);
 }
-
 // Little helper
 function logResponse(method, url, code, type) {
 	console.log(`${chalk.cyan(method)}`, url, `${chalk.yellow(type)}`, code);
 }
-
 // Detect content type using file extension
 function getTypes() {
 	return {

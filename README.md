@@ -2,7 +2,7 @@
 
 > Fast & Lightweight HTTP server, that just works. Accessible through CLI.
 
-[![Build Status](https://travis-ci.org/xxczaki/fastic.svg?branch=master)](https://travis-ci.org/xxczaki/fastic) [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/xojs/xo) [![install size](https://packagephobia.now.sh/badge?p=fastic@1.0.2)](https://packagephobia.now.sh/result?p=fastic)
+[![Build Status](https://travis-ci.org/xxczaki/fastic.svg?branch=master)](https://travis-ci.org/xxczaki/fastic) [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/xojs/xo) [![install size](https://packagephobia.now.sh/badge?p=fastic)](https://packagephobia.now.sh/result?p=fastic)
 
 <img src="https://cdn.rawgit.com/xxczaki/fastic/c538d63c/gif.svg" alt="SVG">
 
@@ -12,10 +12,11 @@
 - Uses async/await
 - Easy access through CLI.
 - Automatically detects the content type, using file extension.
+- Uses blazing fast [turbo-http](https://github.com/mafintosh/turbo-http) library.
 - Logs HTTP requests & response status codes.
 - Single source file (containing ~160 lines of code)
-- 2 dependencies
-- Lightweight (only ~1.2 MB).
+- 3 dependencies
+- Lightweight (only ~1.6 MB).
 
 # Install
 ```bash
