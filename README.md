@@ -31,7 +31,7 @@ npx fastic
 
 ```bash
 Usage
- $ fastic [port] [directory]
+ $ fastic <port> <directory>
 
 Examples
  $ fastic
