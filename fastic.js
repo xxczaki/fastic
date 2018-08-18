@@ -25,19 +25,19 @@ turbo.createServer(async (req, res) => {
 				if (err) {
 					requestPath = (requestPath + '/').replace(/\/+$/, '/');
 					listDirectory(res, filePath, requestPath);
-					logResponse(`${chalk.green('fastic')} ${chalk.dim('›')} `, `${chalk.cyan(method)}`, url, `${chalk.yellow(200)}`);
+					logResponse(`${chalk.green('fastic')} ${chalk.dim('›')} `, `${chalk.cyan(method)}`, url, `${chalk.yellow.bold(200)}`);
 				} else {
 					sendFile(res, 'text/html', content);
-					logResponse(`${chalk.green('fastic')} ${chalk.dim('›')} `, `${chalk.cyan(method)}`, url, `${chalk.yellow(200)}`);
+					logResponse(`${chalk.green('fastic')} ${chalk.dim('›')} `, `${chalk.cyan(method)}`, url, `${chalk.yellow.bold(200)}`);
 				}
 			});
 		} else {
 			fs.readFile(filePath, (err, content) => {
 				if (err) {
-					logResponse(`${chalk.green('fastic')} ${chalk.dim('›')} `, `${chalk.cyan(method)}`, url, `${chalk.red(404)}`);
+					logResponse(`${chalk.green('fastic')} ${chalk.dim('›')} `, `${chalk.cyan(method)}`, url, `${chalk.red.bold(404)}`);
 				} else {
 					sendFile(res, type, content);
-					logResponse(`${chalk.green('fastic')} ${chalk.dim('›')} `, `${chalk.cyan(method)}`, url, `${chalk.yellow(200)}`);
+					logResponse(`${chalk.green('fastic')} ${chalk.dim('›')} `, `${chalk.cyan(method)}`, url, `${chalk.yellow.bold(200)}`);
 				}
 			});
 		}
@@ -52,7 +52,7 @@ turbo.createServer(async (req, res) => {
 		process.exit(1);
 	}
 	// Notify user about server & copy it's address to clipboard
-	console.log(`${chalk.green('fastic')} ${chalk.dim('›')} Running at http://127.0.0.1:${port} ${chalk.dim('[copied to clipboard]')}`);
+	console.log(`${chalk.green('fastic')} ${chalk.dim('›')} Running at ${chalk.cyan('127.0.0.1:' + port)} ${chalk.dim('[copied to clipboard]')}`);
 	console.log('\n=> Press Ctrl + C to stop\n');
 	clipboardy.write(`http://127.0.0.1:${port}`);
 });
