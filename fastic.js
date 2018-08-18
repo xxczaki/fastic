@@ -48,13 +48,13 @@ turbo.createServer(async (req, res) => {
 		console.log(chalk.red('Maximum available port number is 65535!'));
 		process.exit(1);
 	} else if (isNaN(port)) {
-		console.log(chalk.red(port, 'is not a port number!'));
+		console.log(chalk.red(port, 'is not a port number!\n If you want to use a custom path, you also need to specify a custom port.'));
 		process.exit(1);
 	}
 	// Notify user about server & copy it's address to clipboard
-	console.log(`${chalk.green('fastic')} ${chalk.dim('›')} Running at http://localhost:${port} ${chalk.dim('[copied to clipboard]')}`);
+	console.log(`${chalk.green('fastic')} ${chalk.dim('›')} Running at http://127.0.0.1:${port} ${chalk.dim('[copied to clipboard]')}`);
 	console.log('\n=> Press Ctrl + C to stop\n');
-	clipboardy.write(`http://localhost:${port}`);
+	clipboardy.write(`http://127.0.0.1:${port}`);
 });
 // Show message, when Ctrl + C is pressed
 process.on('SIGINT', () => {
@@ -101,21 +101,21 @@ function listDirectory(res, dir, requestPath) {
 async function sendDirListing(res, files, dirs, requestPath) {
 	requestPath = ('/' + requestPath).replace(/\/+/g, '/');
 	const content = await `
-		<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin-left: 25px; -webkit-font-smoothing: antialiased; font-family: Menlo, Consolas, monospace;">
-			<h2>Listing files for <b>${requestPath}</b></h2>
-			<ul>
+		<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin-left: 25px; -webkit-font-smoothing: antialiased; font-family: '-apple-system', 'system-ui', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';">
+			<h1>Index of <b>${requestPath}</b></h1>
+			<ul style="list-style-type: none;">
 ${
 	dirs.map(dir => {
-		return '<li><a href="' + requestPath + dir + '">' + dir + '</a></li>';
+		return '<li>📁 <a href="' + requestPath + dir + '">' + dir + '</a></li>';
 	}).join('')
 }
 ${
 	files.map(file => {
-		return '<li><a href="' + requestPath + file + '">' + file + '</a></li>';
+		return '<li>📄 <a href="' + requestPath + file + '">' + file + '</a></li>';
 	}).join('')
 }
 			</ul>
-			<footer>Powered by <a href="https://github.com/xxczaki/fastic">fastic</a> 🚀</footer>
+			<footer style="font-size:14px"><i><a href="https://github.com/xxczaki/fastic">fastic</a> › Serving "${root}" at <a href="127.0.0.1:${port}">127.0.0.1:${port}</a></i></footer>
 			</body></html>
 	`;
 	res.end(content);
