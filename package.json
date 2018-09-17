@@ -29,8 +29,6 @@
     "website"
   ],
   "devDependencies": {
-    "ava": "*",
-    "execa": "*",
     "xo": "*"
   },
   "dependencies": {
@@ -39,7 +37,7 @@
     "turbo-http": "^0.3.0"
   },
   "scripts": {
-    "test": "xo && ava"
+    "test": "xo"
   },
   "xo": {
     "space": true
