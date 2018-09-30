@@ -16,7 +16,7 @@
 - Logs HTTP requests & response status codes.
 - Single source file (containing ~160 lines of code)
 - 3 dependencies
-- Lightweight (only ~1.6 MB).
+- Lightweight (only ~0,5 MB).
 
 # Install
 ```bash

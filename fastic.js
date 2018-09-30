@@ -1,16 +1,24 @@
 #!/usr/bin/env node
-/* eslint handle-callback-err:0 */
 
 'use strict';
 
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
-const clipboardy = require('clipboardy');
+const opn = require('opn');
 const turbo = require('turbo-http');
 
 const port = process.argv[2] || 5050;
 const root = process.argv[3] || '.';
+
+// Check if the port number is valid
+if (port < 1024 || port > 65535) {
+  console.log(chalk.red('Invalid port number! It should fit in range between 1024 and 65535.'));
+  process.exit(1);
+} else if (isNaN(port)) {
+  console.log(chalk.red(port, 'is not a port number!\nNOTE: If you want to use a custom path, you also need to specify a custom port.'));
+  process.exit(1);
+}
 
 // Detect content type using file extension
 const getTypes = () => {
@@ -46,11 +54,6 @@ const getTypes = () => {
 };
 
 const types = getTypes();
-
-// Little helper
-const logResponse = (method, url, code, type) => {
-  console.log(`${chalk.cyan(method)}`, url, `${chalk.yellow(type)}`, code);
-};
 
 // Set headers
 const sendFile = async (res, type, content) => {
@@ -127,37 +130,30 @@ turbo.createServer(async (req, res) => {
         if (err) {
           requestPath = (requestPath + '/').replace(/\/+$/, '/');
           listDirectory(res, filePath, requestPath);
-          logResponse(`${chalk.green('fastic')} ${chalk.dim('›')} `, `${chalk.cyan(method)}`, url, `${chalk.yellow.bold(200)}`);
+          console.log(`${chalk.green('fastic')} ${chalk.dim('›')} `, `${chalk.cyan(method)}`, `${chalk.yellow.bold(200)}`, url);
         } else {
           sendFile(res, 'text/html', content);
-          logResponse(`${chalk.green('fastic')} ${chalk.dim('›')} `, `${chalk.cyan(method)}`, url, `${chalk.yellow.bold(200)}`);
+          console.log(`${chalk.green('fastic')} ${chalk.dim('›')} `, `${chalk.cyan(method)}`, `${chalk.yellow.bold(200)}`, url);
         }
       });
     } else {
       fs.readFile(filePath, (err, content) => {
         if (err) {
-          logResponse(`${chalk.green('fastic')} ${chalk.dim('›')} `, `${chalk.cyan(method)}`, url, `${chalk.red.bold(404)}`);
+          console.log(`${chalk.green('fastic')} ${chalk.dim('›')} `, `${chalk.cyan(method)}`, `${chalk.red.bold(404)}`, url);
         } else {
           sendFile(res, type, content);
-          logResponse(`${chalk.green('fastic')} ${chalk.dim('›')} `, `${chalk.cyan(method)}`, url, `${chalk.yellow.bold(200)}`);
+          console.log(`${chalk.green('fastic')} ${chalk.dim('›')} `, `${chalk.cyan(method)}`, `${chalk.yellow.bold(200)}`, url);
         }
       });
     }
   });
 }).listen(port, () => {
-  // Do not start server, if port number is greater than 65535 or the value is not a number
-  if (port > 65535) {
-    console.log(chalk.red('Maximum available port number is 65535!'));
-    process.exit(1);
-  } else if (isNaN(port)) {
-    console.log(chalk.red(port, 'is not a port number!\n NOTE: If you want to use a custom path, you also need to specify a custom port.'));
-    process.exit(1);
-  }
-  // Notify user about server & copy it's address to clipboard
-  console.log(`${chalk.green('fastic')} ${chalk.dim('›')} Running at ${chalk.cyan('127.0.0.1:' + port)} ${chalk.dim('[copied to clipboard]')}`);
+  // Notify user about server & open it in browser
+  console.log(`${chalk.green('fastic')} ${chalk.dim('›')} Running at ${chalk.cyan('127.0.0.1:' + port)} ${chalk.dim('[opened in browser]')}`);
   console.log('\n=> Press Ctrl + C to stop\n');
-  clipboardy.write(`http://127.0.0.1:${port}`);
+  opn(`http://127.0.0.1:${port}`);
 });
+
 // Show message, when Ctrl + C is pressed
 process.on('SIGINT', () => {
   console.log(`\n${chalk.green('fastic')} ${chalk.dim('›')} Stopped, see you next time!`);
