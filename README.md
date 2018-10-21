@@ -4,7 +4,7 @@
 
 [![Build Status](https://travis-ci.org/xxczaki/fastic.svg?branch=master)](https://travis-ci.org/xxczaki/fastic) [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/xojs/xo) [![install size](https://packagephobia.now.sh/badge?p=fastic)](https://packagephobia.now.sh/result?p=fastic)
 
-<img src="https://cdn.rawgit.com/xxczaki/fastic/c538d63c/gif.svg" alt="SVG">
+<img src="https://rawcdn.githack.com/xxczaki/fastic/master/gif.svg" alt="SVG">
 
 # Highlights
 - Beautiful output
