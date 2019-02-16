@@ -1,7 +1,7 @@
 {
   "name": "fastic",
   "description": "Fast & Lightweight CLI HTTP server",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "bin": {
     "fastic": "./fastic.js"
   },
@@ -32,7 +32,7 @@
     "xo": "*"
   },
   "dependencies": {
-    "chalk": "^2.4.1",
+    "chalk": "^2.4.2",
     "opn": "^5.4.0",
     "turbo-http": "^0.3.0"
   },
