@@ -65,9 +65,9 @@ const sendFile = async (res, type, content) => {
 };
 
 // Interface for listing the directory's contents
-const sendDirListing = async (res, files, dirs, requestPath) => {
+const sendDirListing = (res, files, dirs, requestPath) => {
   requestPath = ('/' + requestPath).replace(/\/+/g, '/');
-  const content = await `
+  const content = `
 		<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin-left: 25px; -webkit-font-smoothing: antialiased; font-family: '-apple-system', 'system-ui', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';">
 			<h1>Index of <b>${requestPath}</b></h1>
 			<ul style="list-style-type: none;">
@@ -89,11 +89,11 @@ ${
 };
 
 // Directory listing
-const listDirectory = (res, dir, requestPath) => {
-  res.setHeader('Content-Type', 'text/html');
-  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-  res.setHeader('Pragma', 'no-cache');
-  res.setHeader('Expires', '0');
+const listDirectory = async (res, dir, requestPath) => {
+  await res.setHeader('Content-Type', 'text/html');
+  await res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  await res.setHeader('Pragma', 'no-cache');
+  await res.setHeader('Expires', '0');
 
   fs.readdir(dir, (err, fileNames) => {
     let numRemaining = fileNames.length;
@@ -109,6 +109,7 @@ const listDirectory = (res, dir, requestPath) => {
             files.push(name);
           }
         }
+
         if (!--numRemaining) {
           sendDirListing(res, files, dirs, requestPath);
         }
@@ -119,10 +120,10 @@ const listDirectory = (res, dir, requestPath) => {
 
 // Server
 turbo.createServer(async (req, res) => {
-  const {method, url} = await req;
+  const {method, url} = req;
   let requestPath = decodeURI(url.replace(/^\/+/, '').replace(/\?.*$/, ''));
-  const filePath = await path.resolve(root, requestPath);
-  const type = await types[path.extname(filePath)] || 'application/octet-stream';
+  const filePath = path.resolve(root, requestPath);
+  const type = types[path.extname(filePath)] || 'application/octet-stream';
   // Logger
   fs.stat(filePath, (err, stat) => {
     if (stat && stat.isDirectory()) {
@@ -130,19 +131,19 @@ turbo.createServer(async (req, res) => {
         if (err) {
           requestPath = (requestPath + '/').replace(/\/+$/, '/');
           listDirectory(res, filePath, requestPath);
-          console.log(`${chalk.green('fastic')} ${chalk.dim('›')} `, `${chalk.cyan(method)}`, `${chalk.yellow.bold(200)}`, url);
+          console.log(`${chalk.green('fastic')} ${chalk.dim('›')}`, `${chalk.cyan(method)}`, `${chalk.yellow.bold(200)}`, url);
         } else {
           sendFile(res, 'text/html', content);
-          console.log(`${chalk.green('fastic')} ${chalk.dim('›')} `, `${chalk.cyan(method)}`, `${chalk.yellow.bold(200)}`, url);
+          console.log(`${chalk.green('fastic')} ${chalk.dim('›')}`, `${chalk.cyan(method)}`, `${chalk.yellow.bold(200)}`, url);
         }
       });
     } else {
       fs.readFile(filePath, (err, content) => {
         if (err) {
-          console.log(`${chalk.green('fastic')} ${chalk.dim('›')} `, `${chalk.cyan(method)}`, `${chalk.red.bold(404)}`, url);
+          console.log(`${chalk.green('fastic')} ${chalk.dim('›')}`, `${chalk.cyan(method)}`, `${chalk.red.bold(404)}`, url);
         } else {
           sendFile(res, type, content);
-          console.log(`${chalk.green('fastic')} ${chalk.dim('›')} `, `${chalk.cyan(method)}`, `${chalk.yellow.bold(200)}`, url);
+          console.log(`${chalk.green('fastic')} ${chalk.dim('›')}`, `${chalk.cyan(method)}`, `${chalk.yellow.bold(200)}`, url);
         }
       });
     }
