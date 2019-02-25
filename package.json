@@ -40,7 +40,6 @@
     "test": "xo"
   },
   "xo": {
-    "space": true,
     "rules": {
       "handle-callback-err": 0
     }
