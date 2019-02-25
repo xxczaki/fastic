@@ -4,19 +4,57 @@
 
 const fs = require('fs');
 const path = require('path');
+const meow = require('meow');
 const chalk = require('chalk');
 const opn = require('opn');
 const turbo = require('turbo-http');
+const isDirectory = require('is-directory');
 
-const port = process.argv[2] || 5050;
-const root = process.argv[3] || '.';
+// CLI Configuration
+const cli = meow(`
+	Usage
+	  $ fastic <options>
+	Options
+	  --port, -p    		Port on which the server will be running [default: 5050]
+    --directory, -d   Directory from which the server will be running [default: current path]
+    --open, -o        Open server address in browser? [default: false]
+	Examples
+	  $ fastic
+    $ fastic -p 8080 -d dist --open
+`, {
+	flags: {
+		port: {
+			type: 'string',
+			alias: 'p',
+			default: '5050'
+		},
+		directory: {
+			type: 'string',
+			alias: 'd',
+			default: '.'
+		},
+		open: {
+			type: 'boolean',
+			alias: 'o',
+			default: false
+		}
+	}
+});
 
-// Check if the port number is valid
+const {port, directory} = cli.flags;
+
+// Port validation
 if (port < 1024 || port > 65535) {
 	console.log(chalk.red('Invalid port number! It should fit in range between 1024 and 65535.'));
 	process.exit(1);
 } else if (isNaN(port)) {
-	console.log(chalk.red(port, 'is not a port number!\nNOTE: If you want to use a custom path, you also need to specify a custom port.'));
+	console.log(chalk.red(port, 'is not a port number!'));
+	process.exit(1);
+}
+
+// Directory validation
+if (!isDirectory.sync(directory)) {
+	console.log(chalk.red(directory, 'is not a directory.'));
 	process.exit(1);
 }
 
@@ -82,7 +120,7 @@ ${
 	}).join('')
 }
 			</ul>
-			<footer style="font-size:14px"><i><a href="https://github.com/xxczaki/fastic">fastic</a> › Serving "${root}" at <a href="#">127.0.0.1:${port}</a></i></footer>
+			<footer style="font-size:14px"><i><a href="https://github.com/xxczaki/fastic">fastic</a> › Serving "${directory}" at <a href="#">127.0.0.1:${port}</a></i></footer>
 			</body></html>
 	`;
 	res.end(content);
@@ -122,7 +160,7 @@ const listDirectory = async (res, dir, requestPath) => {
 turbo.createServer(async (req, res) => {
 	const {method, url} = req;
 	let requestPath = decodeURI(url.replace(/^\/+/, '').replace(/\?.*$/, ''));
-	const filePath = path.resolve(root, requestPath);
+	const filePath = path.resolve(directory, requestPath);
 	const type = types[path.extname(filePath)] || 'application/octet-stream';
 	// Logger
 	fs.stat(filePath, (err, stat) => {
@@ -150,9 +188,11 @@ turbo.createServer(async (req, res) => {
 	});
 }).listen(port, () => {
 	// Notify user about server & open it in browser
-	console.log(`${chalk.green('fastic')} ${chalk.dim('›')} Running at ${chalk.cyan('127.0.0.1:' + port)} ${chalk.dim('[opened in browser]')}`);
+	console.log(`${chalk.green('fastic')} ${chalk.dim('›')} Running at ${chalk.cyan('127.0.0.1:' + port)} ${cli.flags.open ? chalk.dim('[opened in browser]') : ''}`);
 	console.log('\n=> Press Ctrl + C to stop\n');
-	opn(`http://127.0.0.1:${port}`);
+	if (cli.flags.open) {
+		opn(`http://127.0.0.1:${port}`);
+	}
 });
 
 // Show message, when Ctrl + C is pressed
