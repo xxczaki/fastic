@@ -4,10 +4,12 @@
 
 const fs = require('fs');
 const path = require('path');
+const turbo = require('turbo-http');
 const meow = require('meow');
 const chalk = require('chalk');
-const opn = require('opn');
-const turbo = require('turbo-http');
+const boxen = require('boxen');
+const open = require('open');
+const clipboardy = require('clipboardy');
 const isDirectory = require('is-directory');
 
 // CLI Configuration
@@ -15,12 +17,14 @@ const cli = meow(`
 	Usage
 	  $ fastic <options>
 	Options
-	  --port, -p    		Port on which the server will be running [default: 5050]
-    --directory, -d   Directory from which the server will be running [default: current path]
-    --open, -o        Open server address in browser? [default: false]
+	  --port, -p    			Port on which the server will be running [default: 5050]
+    --directory, -d   	Directory from which the server will be running [default: current path]
+		--open, -o        	Open server address in browser? [default: false]
+		--log, -l    				Log HTTP requests & response status codes [default: false]
 	Examples
 	  $ fastic
-    $ fastic -p 8080 -d dist --open
+		$ fastic -p 8080 -d dist --open
+		$ fastic --port 3000 --log
 `, {
 	flags: {
 		port: {
@@ -36,6 +40,11 @@ const cli = meow(`
 		open: {
 			type: 'boolean',
 			alias: 'o',
+			default: false
+		},
+		log: {
+			type: 'boolean',
+			alias: 'l',
 			default: false
 		}
 	}
@@ -96,6 +105,7 @@ const types = getTypes();
 // Set headers
 const sendFile = async (res, type, content) => {
 	await res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+	await res.setHeader('Clear-Site-Data', '*');
 	await res.setHeader('Pragma', 'no-cache');
 	await res.setHeader('Expires', '0');
 	await res.setHeader('Content-Type', type);
@@ -120,7 +130,7 @@ ${
 	}).join('')
 }
 			</ul>
-			<footer style="font-size:14px"><i><a href="https://github.com/xxczaki/fastic">fastic</a> › Serving "${directory}" at <a href="#">127.0.0.1:${port}</a></i></footer>
+			<footer style="font-size:14px"><i><a href="https://github.com/xxczaki/fastic">Fastic</a> › Serving "${directory}" at <a href="#">127.0.0.1:${port}</a></i></footer>
 			</body></html>
 	`;
 	res.end(content);
@@ -129,6 +139,7 @@ ${
 // Directory listing
 const listDirectory = async (res, dir, requestPath) => {
 	await res.setHeader('Content-Type', 'text/html');
+	await res.setHeader('Clear-Site-Data', '*');
 	await res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
 	await res.setHeader('Pragma', 'no-cache');
 	await res.setHeader('Expires', '0');
@@ -169,34 +180,46 @@ turbo.createServer(async (req, res) => {
 				if (err) {
 					requestPath = (requestPath + '/').replace(/\/+$/, '/');
 					listDirectory(res, filePath, requestPath);
-					console.log(`${chalk.green('fastic')} ${chalk.dim('›')}`, `${chalk.cyan(method)}`, `${chalk.yellow.bold(200)}`, url);
+					if (cli.flags.log) {
+						console.log(`${chalk.green('Fastic')} ${chalk.dim('›')}`, `${chalk.cyan(method)}`, `${chalk.yellow.bold(200)}`, url);
+					}
 				} else {
 					sendFile(res, 'text/html', content);
-					console.log(`${chalk.green('fastic')} ${chalk.dim('›')}`, `${chalk.cyan(method)}`, `${chalk.yellow.bold(200)}`, url);
+					if (cli.flags.log) {
+						console.log(`${chalk.green('Fastic')} ${chalk.dim('›')}`, `${chalk.cyan(method)}`, `${chalk.yellow.bold(200)}`, url);
+					}
 				}
 			});
 		} else {
 			fs.readFile(filePath, (err, content) => {
 				if (err) {
-					console.log(`${chalk.green('fastic')} ${chalk.dim('›')}`, `${chalk.cyan(method)}`, `${chalk.red.bold(404)}`, url);
+					if (cli.flags.log) {
+						console.log(`${chalk.green('Fastic')} ${chalk.dim('›')}`, `${chalk.cyan(method)}`, `${chalk.red.bold(404)}`, url);
+					}
 				} else {
 					sendFile(res, type, content);
-					console.log(`${chalk.green('fastic')} ${chalk.dim('›')}`, `${chalk.cyan(method)}`, `${chalk.yellow.bold(200)}`, url);
+					if (cli.flags.log) {
+						console.log(`${chalk.green('Fastic')} ${chalk.dim('›')}`, `${chalk.cyan(method)}`, `${chalk.yellow.bold(200)}`, url);
+					}
 				}
 			});
 		}
 	});
 }).listen(port, () => {
 	// Notify user about server & open it in browser
-	console.log(`${chalk.green('fastic')} ${chalk.dim('›')} Running at ${chalk.cyan('127.0.0.1:' + port)} ${cli.flags.open ? chalk.dim('[opened in browser]') : ''}`);
-	console.log('\n=> Press Ctrl + C to stop\n');
+	console.log(boxen(
+		`${chalk.green('Fastic')} ${chalk.dim('›')} Running at ${chalk.cyan('127.0.0.1:' + port)} ${cli.flags.open ? chalk.dim('[opened in browser]') : chalk.dim('[copied to clipboard]')}\n\n=> Press Ctrl + C to stop`
+		, {padding: 1, borderStyle: 'round'}));
+
 	if (cli.flags.open) {
-		opn(`http://127.0.0.1:${port}`);
+		open(`http://127.0.0.1:${port}`);
+	} else {
+		clipboardy.write(`http://127.0.0.1:${port}`);
 	}
 });
 
 // Show message, when Ctrl + C is pressed
 process.on('SIGINT', () => {
-	console.log(`\n${chalk.green('fastic')} ${chalk.dim('›')} Stopped, see you next time!`);
+	console.log(`\n${chalk.green('Fastic')} ${chalk.dim('›')} Stopped, see you next time!`);
 	process.exit(0);
 });
