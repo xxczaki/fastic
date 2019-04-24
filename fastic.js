@@ -15,14 +15,14 @@ const isDirectory = require('is-directory');
 // CLI Configuration
 const cli = meow(`
 	Usage
-	  $ fastic <options>
+	 	$ fastic <options>
 	Options
-	  --port, -p    			Port on which the server will be running [default: 5050]
-    --directory, -d   	Directory from which the server will be running [default: current path]
-		--open, -o        	Open server address in browser? [default: false]
-		--log, -l    				Log HTTP requests & response status codes [default: false]
+	  	--port, -p    		Port on which the server will be running (default: 5050)
+    	--directory, -d   	Directory from which the server will be running (default: current path)
+		--open, -o        	Open server address in browser? (default: false)
+		--log, -l    		Log HTTP requests & response status codes (default: false)
 	Examples
-	  $ fastic
+	  	$ fastic
 		$ fastic -p 8080 -d dist --open
 		$ fastic --port 3000 --log
 `, {
