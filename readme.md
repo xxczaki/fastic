@@ -28,15 +28,17 @@ npx fastic
 # Usage
 
 ```bash
-Usage
-    $ fastic <options>
-Options
-    --port, -p    		Port on which the server will be running [default: 5050]
-    --directory, -d     Directory from which the server will be running [default: current path]
-    --open, -o          Open server address in browser? [default: false]
-Examples
-    $ fastic
-    $ fastic -p 8080 -d dist --open
+	Usage
+	 	$ fastic <options>
+	Options
+	  	--port, -p    		Port on which the server will be running (default: 5050)
+    	--directory, -d   	Directory from which the server will be running (default: current path)
+		--open, -o        	Open server address in browser? (default: false)
+		--log, -l    		Log HTTP requests & response status codes (default: false)
+	Examples
+	  	$ fastic
+		$ fastic -p 8080 -d dist --open
+		$ fastic --port 3000 --log
 ```
 
 ## License
