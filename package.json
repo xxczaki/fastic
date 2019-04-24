@@ -37,7 +37,7 @@
     "clipboardy": "^2.0.0",
     "is-directory": "^0.3.1",
     "meow": "^5.0.0",
-    "open": "^6.1.0",
+    "open": "^6.2.0",
     "turbo-http": "^0.3.2"
   },
   "scripts": {
