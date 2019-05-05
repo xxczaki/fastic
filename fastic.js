@@ -10,7 +10,7 @@ const chalk = require('chalk');
 const boxen = require('boxen');
 const open = require('open');
 const clipboardy = require('clipboardy');
-const isDirectory = require('is-directory');
+const directoryExists = require('directory-exists');
 
 // CLI Configuration
 const cli = meow(`
@@ -62,7 +62,7 @@ if (port < 1024 || port > 65535) {
 }
 
 // Directory validation
-if (!isDirectory.sync(directory)) {
+if (directoryExists(directory) === false) {
 	console.log(chalk.red(directory, 'is not a directory.'));
 	process.exit(1);
 }
@@ -105,7 +105,7 @@ const types = getTypes();
 // Set headers
 const sendFile = async (res, type, content) => {
 	await res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-	await res.setHeader('Clear-Site-Data', '*');
+	await res.setHeader('Clear-Site-Data', 'cache', 'cookies');
 	await res.setHeader('Pragma', 'no-cache');
 	await res.setHeader('Expires', '0');
 	await res.setHeader('Content-Type', type);
@@ -116,8 +116,8 @@ const sendFile = async (res, type, content) => {
 const sendDirListing = (res, files, dirs, requestPath) => {
 	requestPath = ('/' + requestPath).replace(/\/+/g, '/');
 	const content = `
-		<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin-left: 25px; -webkit-font-smoothing: antialiased; font-family: '-apple-system', 'system-ui', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';">
-			<h1>Index of <b>${requestPath}</b></h1>
+		<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"/></head><body style="margin-left: 40px; -webkit-font-smoothing: antialiased; font-family: '-apple-system', 'system-ui', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';">
+			<a style="text-decoration: none; color: #000" href="/"><h1>Index of <b>${requestPath}</b></h1></a>
 			<ul style="list-style-type: none;">
 ${
 	dirs.map(dir => {
@@ -139,7 +139,7 @@ ${
 // Directory listing
 const listDirectory = async (res, dir, requestPath) => {
 	await res.setHeader('Content-Type', 'text/html');
-	await res.setHeader('Clear-Site-Data', '*');
+	await res.setHeader('Clear-Site-Data', 'cache', 'cookies');
 	await res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
 	await res.setHeader('Pragma', 'no-cache');
 	await res.setHeader('Expires', '0');
