@@ -21,6 +21,7 @@
 npm install --global fastic
 ```
 You can also use `npx`:
+
 ```bash
 npx fastic
 ```
