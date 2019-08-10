@@ -1,7 +1,7 @@
 {
   "name": "fastic",
   "description": "Fast & Lightweight CLI HTTP server",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "bin": {
     "fastic": "./fastic.js"
   },
@@ -38,14 +38,16 @@
     "directory-exists": "^2.0.1",
     "meow": "^5.0.0",
     "open": "^6.4.0",
-    "turbo-http": "^0.3.2"
+    "turbo-http": "^0.3.2",
+    "v8-compile-cache": "^2.1.0"
   },
   "scripts": {
     "test": "xo"
   },
   "xo": {
     "rules": {
-      "handle-callback-err": 0
+      "handle-callback-err": 0,
+      "import/no-unassigned-import": 0
     }
   }
 }

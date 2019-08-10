@@ -2,6 +2,8 @@
 
 'use strict';
 
+require('v8-compile-cache');
+
 const fs = require('fs');
 const path = require('path');
 const turbo = require('turbo-http');
