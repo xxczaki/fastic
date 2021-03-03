@@ -37,7 +37,7 @@
     "clipboardy": "^2.1.0",
     "directory-exists": "^2.0.1",
     "meow": "^5.0.0",
-    "open": "^6.4.0",
+    "open": "^8.0.1",
     "turbo-http": "^0.3.2",
     "v8-compile-cache": "^2.1.0"
   },
