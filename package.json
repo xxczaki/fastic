@@ -32,7 +32,7 @@
     "xo": "*"
   },
   "dependencies": {
-    "boxen": "^4.1.0",
+    "boxen": "^5.0.1",
     "chalk": "^2.4.2",
     "clipboardy": "^2.1.0",
     "directory-exists": "^2.0.1",
